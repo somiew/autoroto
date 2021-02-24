@@ -4,6 +4,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtWidgets import QMessageBox
 import FindMattes as fm
 from os import listdir
 
@@ -250,7 +251,15 @@ class Ui_MainWindow(QtWidgets.QWidget):
         folderInput = self.inputEdit.text()
         folderOutput = self.outputEdit.text()
         vSize = self.vosEdit.text()
-        vSize = int(vSize)
+
+        if vSize.isdecimal():
+            vSize = int(vSize)
+        else:
+            msg = QMessageBox()
+            msg.setWindowTitle('Error!')
+            msg.setText('Error: Invalid vertical output size!')
+            msg.setIcon(QMessageBox.Warning)
+            msg.exec_()
 
         # for every image in folder (but in reality every image)
         imgList = listdir(folderInput)
