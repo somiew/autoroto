@@ -63,6 +63,9 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.tvMonitor = QtWidgets.QCheckBox(self.gridLayoutWidget)
         self.tvMonitor.setObjectName("tvMonitor")
         self.gridLayout.addWidget(self.tvMonitor, 3, 4, 1, 1)
+        self.all = QtWidgets.QCheckBox(self.gridLayoutWidget)       # -------------------        
+        self.all.setObjectName("all")                               # Added in code only!
+        self.gridLayout.addWidget(self.all, 4, 0, 1, 1)             # -------------------  
         self.horse = QtWidgets.QCheckBox(self.gridLayoutWidget)
         self.horse.setObjectName("horse")
         self.gridLayout.addWidget(self.horse, 2, 2, 1, 1)
@@ -170,6 +173,7 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.run.clicked.connect(lambda: self.create_matte())
         self.inputButton.clicked.connect(lambda: self.open_input_finder())
         self.outputButton.clicked.connect(lambda: self.open_output_finder())
+        self.all.setChecked(True)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -193,7 +197,10 @@ class Ui_MainWindow(QtWidgets.QWidget):
         MainWindow.setTabOrder(self.sheep, self.sofa)
         MainWindow.setTabOrder(self.sofa, self.train)
         MainWindow.setTabOrder(self.train, self.tvMonitor)
-        MainWindow.setTabOrder(self.tvMonitor, self.outputEdit)
+        MainWindow.setTabOrder(self.tvMonitor, self.all)  # added in code only!
+        MainWindow.setTabOrder(self.all, self.outputEdit)
+
+
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -212,6 +219,8 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.sofa.setText(_translate("MainWindow", "Sofa"))
         self.tvMonitor.setStatusTip(_translate("MainWindow", "(0, 64, 128)"))
         self.tvMonitor.setText(_translate("MainWindow", "Tv/Monitor"))
+        self.all.setStatusTip(_translate("MainWindow", "Everything in different colours"))
+        self.all.setText(_translate("MainWindow", "All"))
         self.horse.setStatusTip(_translate("MainWindow", "(192, 0, 128)"))
         self.horse.setText(_translate("MainWindow", "Horse"))
         self.train.setStatusTip(_translate("MainWindow", "(128, 192, 0)"))
