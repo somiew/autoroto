@@ -6,6 +6,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QFileDialog
 from PyQt5.QtWidgets import QMessageBox
 import FindMattes as fm
+import os
 from os import listdir
 
 class Ui_MainWindow(QtWidgets.QWidget):
@@ -246,12 +247,18 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.inputButton.setText(_translate("MainWindow", "..."))
         self.outputButton.setText(_translate("MainWindow", "..."))
 
+
         # My functions
     def create_matte(self):
         folderInput = self.inputEdit.text()
         folderOutput = self.outputEdit.text()
         vSize = self.vosEdit.text()
 
+        # check if folderOutput actually exists, otherwise, create it
+        if not os.path.exists(folderOutput):
+            os.makedirs(folderOutput)
+
+        # check is size is numbers only, otherwise, warn user about error
         if vSize.isdecimal():
             vSize = int(vSize)
         else:
@@ -275,14 +282,28 @@ class Ui_MainWindow(QtWidgets.QWidget):
             fm.createMatte(inputName, outputName, vSize)
             print('done')
 
+
     def open_input_finder(self):
-        folderpath = str(QFileDialog.getExistingDirectory(self, "Select Directory"))
-        self.inputEdit.setText(folderpath)
-        self.outputEdit.setText(folderpath)
+        folderPath = str(QFileDialog.getExistingDirectory(self, "Select Directory"))
+        self.inputEdit.setText(folderPath)
+
+        # fixing the output folder
+        lastFolder = os.path.basename(folderPath)
+        #outputPath = folderPath.replace(lastFolder, lastFolder + '_autoMatte')
+        outputPath = self.replace_last(folderPath, lastFolder, lastFolder +'_autoMatte')
+        self.outputEdit.setText(outputPath)
+
 
     def open_output_finder(self):
         folderpath = str(QFileDialog.getExistingDirectory(self, "Select Directory"))
         self.outputEdit.setText(folderpath)
+
+
+    # rpartition splits by the last part of what it is looking for
+    # making it easy to change that part specifically to something else
+    def replace_last(self, sourceString, oldString, newString):
+        head, _separator, tail = sourceString.rpartition(oldString)
+        return head + newString + tail
 
 
 if __name__ == "__main__":
