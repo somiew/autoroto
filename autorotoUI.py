@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 # python 3.8.7, Windows 10, 64 bit
 
 
@@ -10,11 +9,12 @@ import FindMattes as fm
 import os
 from os import listdir
 
+import progressBar
 
 class Ui_MainWindow(QtWidgets.QWidget):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(448, 207)
+        MainWindow.resize(448, 179)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.formLayoutWidget = QtWidgets.QWidget(self.centralwidget)
@@ -137,7 +137,7 @@ class Ui_MainWindow(QtWidgets.QWidget):
             msg.setIcon(QMessageBox.Warning)
             msg.exec_()
 
-        # for every image in folder (but in reality every image)
+        # for every image in folder (but in reality every file in folder...)
         imgList = listdir(folderInput)
         for img in imgList:
             inputName = folderInput + '/' + img
@@ -149,7 +149,13 @@ class Ui_MainWindow(QtWidgets.QWidget):
             outputName = folderOutput + '/' + outputName
             print(inputName, outputName, vSize)
             fm.createMatte(inputName, outputName, vSize)
-            print('done')
+
+            #formatting for percent
+            imgNr = int(imgList.index(img))+1
+            maxNr = int(len(imgList))
+            percent = str(round(imgNr/maxNr*100)) + '%'
+            print(percent)
+        print('done')
 
 
     def open_input_finder(self):
