@@ -3,8 +3,7 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QFileDialog
-from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtWidgets import QFileDialog, QMessageBox # CHECK OUT QProgressDialog
 import FindMattes as fm
 import os
 from os import listdir
@@ -153,8 +152,9 @@ class Ui_MainWindow(QtWidgets.QWidget):
             #formatting for percent
             imgNr = int(imgList.index(img))+1
             maxNr = int(len(imgList))
-            percent = str(round(imgNr/maxNr*100)) + '%'
+            percent = round(imgNr/maxNr*100)
             print(percent)
+
         print('done')
 
 
