@@ -3,10 +3,11 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QFileDialog, QMessageBox
+from PyQt5.QtWidgets import QFileDialog, QMessageBox, QApplication
 import FindMattes as fm
 import os
 from os import listdir
+import time
 
 
 class Ui_MainWindow(QtWidgets.QWidget):
@@ -140,7 +141,7 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "Main"))
         self.progressLabel.setText(_translate("MainWindow", "Progress:"))
         self.timeLeftLabel.setText(_translate("MainWindow", "Time left ≈"))
-        self.timeLeft.setText(_translate("MainWindow", "0 h 0 min 0 sek"))
+        self.timeLeft.setText(_translate("MainWindow", "0 h 0 min 0 sec"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("MainWindow", "Progress"))
 
 
@@ -166,10 +167,13 @@ class Ui_MainWindow(QtWidgets.QWidget):
 
         # Change to tab_2 (the progress tab)
         self.tabWidget.setCurrentIndex(1)
+        self.progressBar.setProperty("value", 0)
+        QApplication.processEvents()
 
         # for every image in folder (but in reality every file in folder...)
         imgList = listdir(folderInput)
         for img in imgList:
+            startTime = time.time()
             inputName = folderInput + '/' + img
 
             # find lenght til imgname ends, add _autoMatte and then add the rest of the file name back
@@ -186,6 +190,19 @@ class Ui_MainWindow(QtWidgets.QWidget):
             percent = round(imgNr/maxNr*100)
             print(percent)
             self.progressBar.setProperty("value", percent)
+
+            # Shows estiamted time left
+            stopTime = time.time()
+            timePassed = int(stopTime - startTime)
+            imgsLeft = maxNr - imgNr
+            timeLeft = timePassed * imgsLeft - timePassed
+
+            minLeft = int(timeLeft / 60)
+            secLeft = timeLeft % 60
+
+            _translate = QtCore.QCoreApplication.translate
+            self.timeLeft.setText(_translate("MainWindow", f'{minLeft} min {secLeft} sec'))
+            QApplication.processEvents()
 
         # Change back to original tab
         self.tabWidget.setCurrentIndex(0)
