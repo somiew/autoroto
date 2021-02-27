@@ -193,9 +193,9 @@ class Ui_MainWindow(QtWidgets.QWidget):
 
             # Shows estiamted time left
             stopTime = time.time()
-            timePassed = int(stopTime - startTime)
+            timePassed = stopTime - startTime
             imgsLeft = maxNr - imgNr
-            timeLeft = timePassed * imgsLeft - timePassed
+            timeLeft = int(timePassed * imgsLeft - timePassed)
 
             minLeft = int(timeLeft / 60)
             secLeft = timeLeft % 60
