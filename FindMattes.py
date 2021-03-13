@@ -3,6 +3,9 @@ import torch
 import torchvision.transforms as T
 from torchvision import models
 import numpy as np
+import OpenEXR
+import Imath
+
 
 fcn = None
 
@@ -37,7 +40,27 @@ def decode_segmap(image, nc=21):
     return rgb
 
 def createMatte(filename, matteName, size):
-    img = Image.open(filename).convert('RGB')
+    # If .exr file, open like this
+    if filename.endswith(".exr"):
+        file = OpenEXR.InputFile(filename)
+        pt = Imath.PixelType(Imath.PixelType.FLOAT)
+        dw = file.header()['dataWindow']
+        exrSize = (dw.max.x - dw.min.x + 1, dw.max.y - dw.min.y + 1)
+
+        rgbf = [Image.frombytes("F", exrSize, file.channel(c, pt)) for c in "RGB"]
+
+        extrema = [im.getextrema() for im in rgbf]
+        darkest = min([lo for (lo,hi) in extrema])
+        lighest = max([hi for (lo,hi) in extrema])
+        scale = 255 / (lighest - darkest)
+        def normalize_0_255(v):
+            return (v * scale) + darkest
+        rgb8 = [im.point(normalize_0_255).convert("L") for im in rgbf]
+        img = Image.merge("RGB", rgb8)
+
+    else:
+        img = Image.open(filename).convert('RGB')
+
     trf = T.Compose([T.Resize(size),
                      T.ToTensor(), 
                      T.Normalize(mean = [0.485, 0.456, 0.406], 

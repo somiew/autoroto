@@ -180,6 +180,9 @@ class Ui_MainWindow(QtWidgets.QWidget):
             imgNameEnd = img.find('.')
             outputName = img[:imgNameEnd] + '_autoMatte' + img[imgNameEnd:]
 
+            if outputName.endswith(".exr"):
+                outputName = outputName.replace(".exr", ".png")
+
             outputName = folderOutput + '/' + outputName
             print(inputName, outputName, vSize)
             fm.createMatte(inputName, outputName, vSize)
